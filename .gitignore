@@ -1,0 +1,20 @@
+# Python related files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.env
+*.venv
+env/
+venv/
+.venv/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Firefox extension related files
+*.xpi
+*.zip
+*.crx
+*.pem
