@@ -16,13 +16,14 @@ print(pypresence.__file__)
 dotenv.load_dotenv(override=True)
 
 CLIENT_ID = os.environ["CLIENT_ID"]
-CLIENT_SECRET = os.environ["CLIENT_SECRET"]
 
 connection_start = time.time()
 
 current_song_url = "" 
 
 def panic():
+    global current_song_url
+    current_song_url = ""
     if os.environ.get("ENABLE_SLACK", "0") == "1":
         slackintegration.remove_status()
 
@@ -64,7 +65,6 @@ async def handler(websocket):
         data = json.loads(message)
         print("Received:", data)
 
-        current_song_url = data.get("url", "")
         try:
             if data.get("type", "") == "close":
                 if rpc:
@@ -87,11 +87,13 @@ async def handler(websocket):
                 ],
                 activity_type=2,
             )
+            print(data.get("url"), current_song_url)
             if data.get("url", "") == current_song_url:
                 print("Ignoring duplicate song URL.")
                 continue
             if os.environ.get("ENABLE_SLACK", "0") == "1":
                 slackintegration.set_song(data['title'])
+            current_song_url = data.get("url", "")
 
         except BrokenPipeError as e:
             panic()

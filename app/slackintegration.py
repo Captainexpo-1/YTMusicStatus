@@ -34,7 +34,7 @@ def set_status(status: Dict[str, str|int]):
         )
 
         if result["ok"]:
-            print("Custom status updated successfully!")
+            print("Slack status updated successfully!")
         else:
             print(f"Error updating status: {result['error']}")
 
