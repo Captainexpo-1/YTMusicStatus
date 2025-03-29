@@ -31,7 +31,7 @@ When the extension is active and a YT music tab is open, it starts a websocket s
 There are two possible payloads from the extension:
 
 1. The current song information
-```json
+```js
 {
     "title": str, 
     "progress": {
