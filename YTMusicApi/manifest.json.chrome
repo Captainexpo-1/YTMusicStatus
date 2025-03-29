@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "YT Music Linker",
+  "version": "1.0",
+  "description": "Basic Chrome extension",
+  "permissions": ["tabs", "activeTab"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "js/background.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": "icons/icon.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://music.youtube.com/*"],
+      "js": ["js/content.js"]
+    }
+  ]
+}
