@@ -1,0 +1,13 @@
+certifi==2025.1.31
+cffi==1.17.1
+charset-normalizer==3.4.1
+idna==3.10
+numpy==2.2.4
+pycparser==2.22
+pypresence==4.3.0
+python-dotenv==1.1.0
+requests==2.32.3
+slack_sdk==3.35.0
+sounddevice==0.5.1
+urllib3==2.3.0
+websockets==15.0.1

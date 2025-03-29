@@ -63,9 +63,7 @@ async def handler(websocket):
     async for message in websocket:
         data = json.loads(message)
         print("Received:", data)
-        if data.get("url", "") == current_song_url:
-            print("Ignoring duplicate song URL.")
-            continue
+
         current_song_url = data.get("url", "")
         try:
             if data.get("type", "") == "close":
@@ -83,13 +81,15 @@ async def handler(websocket):
                 state=f"by {data['channel']}",
                 large_image="ytmusic",
                 large_text=f"{format_time(int(data['progress']['total']))} long",  # Duration of the track
-                start=int(time.time()) - int(data["progress"]["current"]),  # Start time for the track
+                start=int(connection_start),  # Start time for the track
                 buttons = [
                     {"label": "Play on YouTube Music", "url": data["url"]},
                 ],
                 activity_type=2,
             )
-            
+            if data.get("url", "") == current_song_url:
+                print("Ignoring duplicate song URL.")
+                continue
             if os.environ.get("ENABLE_SLACK", "0") == "1":
                 slackintegration.set_song(data['title'])
 
