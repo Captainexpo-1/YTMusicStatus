@@ -44,9 +44,9 @@ There are two possible payloads from the extension:
 ```
 
 2. A close event when YT Music is closed
-```json
+```js
 {
-    'type': 'close'
+    "type": "close"
 }
 ```
 
