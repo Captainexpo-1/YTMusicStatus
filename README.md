@@ -33,13 +33,13 @@ There are two possible payloads from the extension:
 1. The current song information
 ```json
 {
-    'title': str, 
-    'progress': {
-        'current': int, 
-        'total': int
+    "title": str, 
+    "progress": {
+        "current": int, 
+        "total": int
     }, 
-    'channel': str, 
-    'url': str
+    "channel": str, 
+    "url": str
 }
 ```
 
