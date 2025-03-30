@@ -12,7 +12,7 @@ client = WebClient(token=SLACK_TOKEN)
 def set_song(song_name: str):
     custom_status = {
         "status_text": f"Listening to {song_name}",  # Text of the status
-        "status_emoji": ":music:",  # Emoji to display
+        "status_emoji": os.environ.get("SLACK_EMOJI", ":music:"),  # Emoji to display
         "status_expiration": 0  # Set to 0 for no expiration
     }
     set_status(custom_status)

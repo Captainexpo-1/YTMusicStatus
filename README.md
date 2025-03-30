@@ -1,57 +1,82 @@
 # YT Music Discord & Slack Integration
 
-This repo contains both an extension and a simple script to integrate YT Music with Discord and Slack.
+Easily integrate YT Music with Discord and Slack using this repository, which includes both a browser extension and a Python script.
+
+---
+
+## Features
+
+### Discord Integration
+![Discord](https://hc-cdn.hel1.your-objectstorage.com/s/v3/34d69cfa0a29457dcde7bd486a180ea554802e63_image.png)
+
+### Slack Integration
+![Slack](https://hc-cdn.hel1.your-objectstorage.com/s/v3/445f26f8463bd792a01fc9e8f0d965b0eebb216d_image.png)
+
+---
 
 ## Installation
 
-1. Clone the repo
-2. Install the extension in your browser (currently it only supports Firefox) by going to `about:debugging#/runtime/this-firefox` and clicking on "Load Temporary Add-on". Select the [manifest.json](YTMusicExtension/manifest.json) file.
-3. Verify that it works by going to [YT Music](https://music.youtube.com), playing a song, and then clicking on the extension icon. You should see a popup with the current song information.
-5. Set up the `.env` file (see [Env Setup](#env-setup)).
-4. To use the script, run `python3 ./app/main.py`
-
-### Env Setup
-
-Copy the `.env.example` file to `.env`
-
+### 1. Clone the Repository
 ```bash
-cp .env.example .env
+git clone "https://github.com/Captainexpo-1/YTMusicDiscordIntegration"
 ```
 
-Then fill in the required environment variables in the `.env` file. 
-You can find the required variables in the `.env.example` file. If you want to disable the slack integration, you can set `ENABLE_SLACK` to `0`.
+### 2. Install the Browser Extension
+- Supported Browser: **Firefox**
+- Steps:
+    1. Navigate to `about:debugging#/runtime/this-firefox` in Firefox.
+    2. Click on **"Load Temporary Add-on"**.
+    3. Select the [manifest.json](YTMusicExtension/manifest.json) file.
 
-Besides that, if you want to only use discord, no changes to the `.env` are needed.
+- **Verification**:  
+    Open [YT Music](https://music.youtube.com), play a song, and click the extension icon. A popup should display the current song information.
 
+### 3. Set Up the `.env` File
+- Copy the example file:
+    ```bash
+    cp .env.example .env
+    ```
+- Fill in the required environment variables in `.env`.  
+    - To disable Slack integration, set `ENABLE_SLACK=0`.
+    - No changes are needed if only Discord integration is required.
 
-## Using the Api
-
-When the extension is active and a YT music tab is open, it starts a websocket server on port 54545. 
-
-There are two possible payloads from the extension:
-
-1. The current song information
-```js
-{
-    "event": "song"
-    "title": str, 
-    "progress": {
-        "current": int, 
-        "total": int
-    }, 
-    "channel": str, 
-    "url": str
-}
+### 4. Run the Script
+```bash
+python3 ./app/main.py
 ```
 
-2. A close event when YT Music is closed
-```js
-{
-    "event": "close"
-}
-```
+---
 
-The provided script in `app/main.py` just listens to the websocket and send the current song information to Discord and Slack (if enabled). 
+## Using the API
+
+When the extension is active and a YT Music tab is open, a WebSocket server starts on port `54545`.
+
+### Payloads
+
+1. **Current Song Information**
+     ```json
+     {
+             "event": "song",
+             "title": "string",
+             "progress": {
+                     "current": "int",
+                     "total": "int"
+             },
+             "channel": "string",
+             "url": "string"
+     }
+     ```
+
+2. **Close Event**
+     ```json
+     {
+             "event": "close"
+     }
+     ```
+
+The script in `app/main.py` listens to the WebSocket and sends the current song information to Discord and Slack (if enabled).
+
+---
 
 ## License
 
