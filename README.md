@@ -33,6 +33,7 @@ There are two possible payloads from the extension:
 1. The current song information
 ```js
 {
+    "event": "song"
     "title": str, 
     "progress": {
         "current": int, 
@@ -46,7 +47,7 @@ There are two possible payloads from the extension:
 2. A close event when YT Music is closed
 ```js
 {
-    "type": "close"
+    "event": "close"
 }
 ```
 

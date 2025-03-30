@@ -13,9 +13,13 @@ function getSongInfo() {
         ".middle-controls>.content-info-wrapper>yt-formatted-string.title",
     );
     let progress = document.querySelector("span.time-info");
-    const channel = document.querySelector(
+    const channelParent = document.querySelector(
         ".content-info-wrapper>.byline-wrapper>span.subtitle>yt-formatted-string",
-    ).childNodes[0];
+    );
+    const channel = channelParent ? channelParent.childNodes[0] : null;
+    const ppButton = document.getElementById("play-pause-button");
+
+
 
     if (progress) {
         progress = progress.textContent.replace(/\s+/g, "").split("/");
@@ -38,6 +42,8 @@ function getSongInfo() {
     }
 
     return {
+        event: "song",
+        paused: ppButton ? (ppButton.getAttribute("title") == "Play" ? true : false) : true,
         title:
             title && title.textContent.length > 0
                 ? title.textContent
@@ -83,9 +89,11 @@ function newSocket() {
 function sendToSocket(songData) {
     if (socket.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify(songData));
+        return true;
     } else {
         console.warn("WebSocket not open. Retrying connection...");
         newSocket();
+        return false;
     }
 }
 
@@ -93,7 +101,7 @@ newSocket();
 
 window.addEventListener("beforeunload", () => {
     if (socket.readyState === WebSocket.OPEN) {
-        socket.send('{"type":"close"}');
+        socket.send('{"event":"close"}');
     }
     socket.close();
 });
