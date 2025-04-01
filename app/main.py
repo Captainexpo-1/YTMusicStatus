@@ -96,7 +96,7 @@ async def handler(websocket):
                         print("Ignoring duplicate song URL.")
                         continue
                     if ENABLE_SLACK:
-                        slackintegration.set_song(data['title'])
+                        slackintegration.set_song(data)
                     current_song_url = data.get("url", "")
                 case "close":
                     if rpc:

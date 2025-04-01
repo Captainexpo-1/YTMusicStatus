@@ -9,15 +9,17 @@ SLACK_TOKEN = os.environ.get("SLACK_OAUTH")
 
 client = WebClient(token=SLACK_TOKEN)
 
-def set_song(song_name: str):
+def set_song(song_data: Dict[str, str]):
+    
+    song_name = song_data["title"]
     
     PREFIX = "Listening to "
-    # limit length to max 100 characters
-    if len(PREFIX + song_name) > 100:
-        song_name = song_name[:95 - len(PREFIX)] + "..."
-
+    SUFFIX = f" by {song_data['channel']}"
+    if len(PREFIX + song_name + SUFFIX) > 100:
+        song_name = song_name[:95 - len(PREFIX + SUFFIX)] + "..."
+        
     custom_status = {
-        "status_text": f"Listening to {song_name}",  # Text of the status
+        "status_text": PREFIX + song_name + SUFFIX,  # Text of the status
         "status_emoji": os.environ.get("SLACK_EMOJI", ":music:"),  # Emoji to display
         "status_expiration": 0  # Set to 0 for no expiration
     }
