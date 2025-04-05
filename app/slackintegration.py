@@ -2,6 +2,8 @@ import os
 from slack_sdk import WebClient
 import dotenv
 from typing import Dict
+import asyncio
+import logging
 
 dotenv.load_dotenv(override=True)
 
@@ -34,8 +36,9 @@ def remove_status():
             "status_expiration": 0  # Set to 0 for no expiration
         }
     )    
-    
+waiting_to_set_status = False
 def set_status(status: Dict[str, str|int]):
+    global waiting_to_set_status
     try:
         result = client.users_profile_set(
             user=os.environ.get("SLACK_USER_ID"),  # Replace with your Slack user ID
@@ -43,10 +46,19 @@ def set_status(status: Dict[str, str|int]):
         )
 
         if result["ok"]:
-            print("Slack status updated successfully!")
+            logging.info("Status updated successfully")
         else:
-            print(f"Error updating status: {result['error']}")
+            logging.info(f"Error updating status: {result['error']}")
 
     except Exception as e:
-        print(f"An error occurred: {e}")
+        if "ratelimited" in str(e): 
+            if waiting_to_set_status:
+                return
+            logging.info("Rate limit exceeded. Trying again in 5 seconds...")
+            waiting_to_set_status = True
+            asyncio.sleep(5)
+            waiting_to_set_status = False
+            set_status(status)
+        else:
+            logging.info(f"An unknown error occurred: {e}")
     

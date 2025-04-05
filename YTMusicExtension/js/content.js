@@ -91,11 +91,12 @@ function sendToSocket(songData) {
         socket.send(JSON.stringify(songData));
         return true;
     } else {
-        console.warn("WebSocket not open. Retrying connection...");
+        console.warn("WebSocket not open. State:", socket.readyState);
         newSocket();
         return false;
     }
 }
+
 
 newSocket();
 
