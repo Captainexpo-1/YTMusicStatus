@@ -1,0 +1,1 @@
+The reason for the patch was that the original library didn't have the capability to send the 'type' field in the payload, which is required to make the icon look like a music not and not a game controller. This patch just adds that functionality.

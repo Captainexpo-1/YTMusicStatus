@@ -11,7 +11,7 @@ SLACK_TOKEN = os.environ.get("SLACK_OAUTH")
 
 client = WebClient(token=SLACK_TOKEN)
 
-def set_song(song_data: Dict[str, str]):
+async def set_song(song_data: Dict[str, str]):
     
     song_name = song_data["title"]
     
@@ -25,11 +25,11 @@ def set_song(song_data: Dict[str, str]):
         "status_emoji": os.environ.get("SLACK_EMOJI", ":music:"),  # Emoji to display
         "status_expiration": 0  # Set to 0 for no expiration
     }
-    set_status(custom_status)
+    await set_status(custom_status)
     
-def remove_status():
+async def remove_status():
     custom_emoji, custom_text = os.environ.get("DEFAULT_STATUS", "|").split("|")
-    set_status(
+    await set_status(
         {
             "status_text": custom_text,  # Text of the status
             "status_emoji": custom_emoji,  # Emoji to display
@@ -37,7 +37,7 @@ def remove_status():
         }
     )    
 waiting_to_set_status = False
-def set_status(status: Dict[str, str|int]):
+async def set_status(status: Dict[str, str|int]):
     global waiting_to_set_status
     try:
         result = client.users_profile_set(
@@ -56,9 +56,9 @@ def set_status(status: Dict[str, str|int]):
                 return
             logging.info("Rate limit exceeded. Trying again in 5 seconds...")
             waiting_to_set_status = True
-            asyncio.sleep(5)
+            await asyncio.sleep(5)
             waiting_to_set_status = False
-            set_status(status)
+            await set_status(status)
         else:
             logging.info(f"An unknown error occurred: {e}")
     

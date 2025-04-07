@@ -1,4 +1,4 @@
-from pypresence import Presence
+from pypresence_patch import Presence
 import time
 import json
 import websockets
@@ -20,6 +20,7 @@ CLIENT_ID = os.environ["CLIENT_ID"]
 # Configure logging
 logging.basicConfig(
     filename=LOG_FILE,
+    filemode='w',
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
@@ -34,7 +35,7 @@ async def stop_status():
     global current_song_url
     current_song_url = ""
     if ENABLE_SLACK:
-        slackintegration.remove_status()
+        await slackintegration.remove_status()
     await asyncio.to_thread(current_rpc.clear)
     
 def connect_rpc():
@@ -104,7 +105,7 @@ async def handler(websocket):
                         logging.info("Ignoring duplicate song URL.")
                         continue
                     if ENABLE_SLACK:
-                        slackintegration.set_song(data)
+                        await slackintegration.set_song(data)
                     current_song_url = data.get("url", "")
                 case "close":
                     if rpc:

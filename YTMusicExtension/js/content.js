@@ -56,6 +56,10 @@ function getSongInfo() {
 
 function sendToBackground(songData) {
     if (!songData) return;
+    if (socket.readyState !== WebSocket.OPEN) {
+        console.warn("Aborting sendToBackground, socket not open");
+        return;
+    }
     console.log("sending to background:", songData);
     chrome.runtime.sendMessage({ type: "updateSong", info: songData });
 }
@@ -71,17 +75,31 @@ function updateSong() {
 setInterval(updateSong, 1000);
 
 let socket;
-
+let tryingToReconnect = false;
 function newSocket() {
+    if (socket) {
+        socket.close();
+    }
+    tryingToReconnect = false;
     socket = new WebSocket("ws://localhost:54545");
 
     socket.addEventListener("error", (err) => {
         console.error("WebSocket error:", err);
+        if (tryingToReconnect) return;
+        tryingToReconnect = true;
+        if (socket) {
+            socket.close();
+        }
         setTimeout(newSocket, 5000); // Try to reconnect after 5 seconds
     });
 
     socket.addEventListener("close", () => {
         console.warn("WebSocket connection closed.");
+        if (tryingToReconnect) return;
+        tryingToReconnect = true;
+        if (socket) {
+            socket.close();
+        }
         setTimeout(newSocket, 5000); // Try to reconnect after 5 seconds
     });
 }
@@ -92,7 +110,6 @@ function sendToSocket(songData) {
         return true;
     } else {
         console.warn("WebSocket not open. State:", socket.readyState);
-        newSocket();
         return false;
     }
 }
